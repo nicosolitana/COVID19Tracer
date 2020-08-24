@@ -1,0 +1,10 @@
+﻿<Application x:Class="SerialSimulation.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:SerialSimulation"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+		<FontFamily x:Key="ProductSansBold">pack://application:,,,/Resources/#Product Sans Bold</FontFamily>
+		<FontFamily x:Key="ProductSanRegular">pack://application:,,,/Resources/#Product Sans Regular</FontFamily>
+    </Application.Resources>
+</Application>

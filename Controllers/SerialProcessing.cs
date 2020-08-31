@@ -8,6 +8,7 @@
 using SerialSimulation.Models;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
 
 namespace SerialSimulation.Controllers
 {
@@ -15,6 +16,7 @@ namespace SerialSimulation.Controllers
     {
         public List<TracerData> TracerData = new List<TracerData>();
         public int peopleCount = 0;
+        public int secondLevelCount = 0;
         public int placesCount = 0;
         public int daysCount = 0;
         public int comCount = 0;
@@ -35,17 +37,22 @@ namespace SerialSimulation.Controllers
                         .Select(i => new TracerData() { Name = i.Name, History = i.History }).ToList();
 
             List<Person> infectedPeeps = new List<Person>();
-            infectedPeeps = TraceInfection(conTracer, _tracerData, dataRet);
+            List<Person> firstLevel;
+            infectedPeeps = TraceInfection(out firstLevel, conTracer, _tracerData, dataRet);
             var noDupes = infectedPeeps.Distinct(new PersonNameComparer()).ToArray();
-            peopleCount = noDupes.Count();
+            var noDupesFirstLevel = firstLevel.Distinct(new PersonNameComparer()).ToArray();
+
+            secondLevelCount = noDupes.Count() - noDupesFirstLevel.Count();
+            peopleCount = noDupesFirstLevel.Count();
             placesCount = conTracer.GetPlacesVisitedCount(dataRet);
             daysCount = conTracer.GetDaysTravelledCount(dataRet);
             comCount = conTracer.GetAffectedCommunitiesCount(infectedPeeps);
         }
 
-        private List<Person> TraceInfection(ContactTracing conTracer, List<TracerData> _tracerData, List<TracerData> dataRet)
+        private List<Person> TraceInfection(out List<Person> firstLevel, ContactTracing conTracer, List<TracerData> _tracerData, List<TracerData> dataRet)
         {
             List<Person> infectedPeeps = new List<Person>();
+            firstLevel = new List<Person>();
             foreach (TracerData s in dataRet)
             {
                 var infPerson = _tracerData.Where(x => x.History.dateData == s.History.dateData && x.History.timeData == s.History.timeData && x.History.Location == s.History.Location)
@@ -53,6 +60,7 @@ namespace SerialSimulation.Controllers
 
                 var secLvlInfection = conTracer. GetSecondLevel(infPerson, _tracerData);
                 infectedPeeps.AddRange(secLvlInfection);
+                firstLevel.AddRange(infPerson);
             }
             return infectedPeeps;
         }

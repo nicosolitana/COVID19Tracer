@@ -19,6 +19,7 @@ namespace SerialSimulation.Controllers
         public int placesCount = 0;
         public int daysCount = 0;
         public int comCount = 0;
+        public int secondLevelCount = 0;
 
         public void StartDataProcessing(string fname, string lname, List<TracerData> _tracerData)
         {
@@ -36,17 +37,23 @@ namespace SerialSimulation.Controllers
                         .Select(i => new TracerData() { Name = i.Name, History = i.History }).ToList();
 
             List<Person> infectedPeeps = new List<Person>();
-            infectedPeeps = TraceInfection(conTracer, _tracerData, dataRet);
+            List<Person> firstLevel;
+            infectedPeeps = TraceInfection(out firstLevel, conTracer, _tracerData, dataRet);
             var noDupes = infectedPeeps.Distinct(new PersonNameComparer()).ToArray();
-            peopleCount = noDupes.Count();
+            var noDupesFirstLevel = firstLevel.Distinct(new PersonNameComparer()).ToArray();
+
+            secondLevelCount = noDupes.Count() - noDupesFirstLevel.Count();
+            peopleCount = noDupesFirstLevel.Count();
             placesCount = conTracer.GetPlacesVisitedCount(dataRet);
             daysCount = conTracer.GetDaysTravelledCount(dataRet);
             comCount = conTracer.GetAffectedCommunitiesCount(infectedPeeps);
         }
 
-        private List<Person> TraceInfection(ContactTracing conTracer, List<TracerData> _tracerData, List<TracerData> dataRet)
+        private List<Person> TraceInfection(out List<Person> firstLevel, ContactTracing conTracer, List<TracerData> _tracerData, List<TracerData> dataRet)
         {
             List<Person> infectedPeeps = new List<Person>();
+            List<Person> firstLev = new List<Person>();
+            firstLevel = new List<Person>();
 
             Parallel.ForEach(dataRet, (s) => {
                 var infPerson = _tracerData.Where(x => x.History.dateData == s.History.dateData && x.History.timeData == s.History.timeData && x.History.Location == s.History.Location)
@@ -54,7 +61,9 @@ namespace SerialSimulation.Controllers
 
                 var secLvlInfection = conTracer.GetSecondLevel(infPerson, _tracerData);
                 infectedPeeps.AddRange(secLvlInfection);
+                firstLev.AddRange(infPerson);
             });
+            firstLevel.AddRange(firstLev);
             return infectedPeeps;
         }
     }

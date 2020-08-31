@@ -41,33 +41,40 @@ namespace SerialSimulation.Controllers
 
         private static IList<TracerData> ExtractEmployeeExcel(OleDbConnection oledbConn)
         {
-            OleDbCommand cmd = new OleDbCommand(); ;
-            OleDbDataAdapter oleda = new OleDbDataAdapter();
-            DataSet dsPeepsInfo = new DataSet();
-
-            cmd.Connection = oledbConn;
-            cmd.CommandType = CommandType.Text;
-            cmd.CommandText = "SELECT * FROM [Person$]"; 
-            oleda = new OleDbDataAdapter(cmd);
-            oleda.Fill(dsPeepsInfo, "Person");
-
-            var dsPeepsInfoLst = dsPeepsInfo.Tables[0].AsEnumerable().Select(s => new TracerData
+            List<TracerData> tdData = new List<TracerData>();
+            for (int i = 1; i <= 12; i++)
             {
-                Name = new Person()
-                {
-                    firstName = Convert.ToString(s["First Name"] != DBNull.Value ? s["First Name"] : ""),
-                    lastName = Convert.ToString(s["Last Name"] != DBNull.Value ? s["Last Name"] : ""),
-                    address = Convert.ToString(s["Address"] != DBNull.Value ? s["Address"] : "")
-                },
-                History = new Activities()
-                {
-                    dateData = Convert.ToString(s["Date"]).Remove(10),
-                    timeData = DateTime.Parse(Convert.ToString(s["Hour"]), CultureInfo.CurrentCulture).ToString("HH:mm:ss tt"),
-                    Location = Convert.ToString(s["Place"] != DBNull.Value ? s["Place"] : "")
-                }
-            }).ToList<TracerData>();
+                string sheetName = "Set" + i.ToString();
+                string query = sheetName + "$";
+                OleDbCommand cmd = new OleDbCommand(); ;
+                OleDbDataAdapter oleda = new OleDbDataAdapter();
+                DataSet dsPeepsInfo = new DataSet();
 
-            return dsPeepsInfoLst;
+                cmd.Connection = oledbConn;
+                cmd.CommandType = CommandType.Text;
+                cmd.CommandText = "SELECT * FROM ["+ query + "]";
+                oleda = new OleDbDataAdapter(cmd);
+                oleda.Fill(dsPeepsInfo, sheetName);
+
+                var dsPeepsInfoLst = dsPeepsInfo.Tables[0].AsEnumerable().Select(s => new TracerData
+                {
+                    Name = new Person()
+                    {
+                        firstName = Convert.ToString(s["FirstName"] != DBNull.Value ? s["FirstName"] : "").Trim(),
+                        lastName = Convert.ToString(s["LastName"] != DBNull.Value ? s["LastName"] : "").Trim(),
+                        address = Convert.ToString(s["Address"] != DBNull.Value ? s["Address"] : "")
+                    },
+                    History = new Activities()
+                    {
+                        dateData = Convert.ToString(s["Date"]).Remove(10),
+                        timeData = DateTime.Parse(Convert.ToString(s["Hour"]), CultureInfo.CurrentCulture).ToString("HH:mm:ss tt"),
+                        Location = Convert.ToString(s["Place"] != DBNull.Value ? s["Place"] : "")
+                    }
+                }).ToList<TracerData>();
+                tdData.AddRange(dsPeepsInfoLst);
+            }
+            //return dsPeepsInfoLst;
+            return tdData;
         }
 
         private static IList<TracerData> ReadExcel(string path)
@@ -93,8 +100,9 @@ namespace SerialSimulation.Controllers
         {
             List<TracerData> _tracerData = new List<TracerData>();
             string exePath = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
-            _tracerData.AddRange(ReadExcel(exePath + @"\DataFolder\SetOne.xls").ToList());
-            _tracerData.AddRange(ReadExcel(exePath + @"\DataFolder\SetTwo.xls").ToList());
+            //_tracerData.AddRange(ReadExcel(exePath + @"\DataFolder\SetOne.xls").ToList());
+            //_tracerData.AddRange(ReadExcel(exePath + @"\DataFolder\SetTwo.xls").ToList());
+            _tracerData.AddRange(ReadExcel(exePath + @"\DataFolder\dataset.xls").ToList());
             return _tracerData;
         }
     }

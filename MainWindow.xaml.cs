@@ -48,6 +48,7 @@ namespace SerialSimulation
 
         private void DisplayData(SerialProcessing sp)
         {
+            peopleCountSecLevel.Content = sp.secondLevelCount.ToString();
             peopleCount.Content = sp.peopleCount.ToString();
             placesCount.Content = sp.placesCount.ToString();
             daysCount.Content = sp.daysCount.ToString();
@@ -58,6 +59,7 @@ namespace SerialSimulation
 
         private void DisplayData(ParallelProcessing pp)
         {
+            peopleCountSecLevel.Content = pp.secondLevelCount.ToString();
             peopleCount.Content = pp.peopleCount.ToString();
             placesCount.Content = pp.placesCount.ToString();
             daysCount.Content = pp.daysCount.ToString();

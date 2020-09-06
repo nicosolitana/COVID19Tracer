@@ -7,7 +7,10 @@
 
 using SerialSimulation.Controllers;
 using SerialSimulation.Models;
+using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace SerialSimulation
@@ -18,20 +21,31 @@ namespace SerialSimulation
     public partial class MainWindow : Window
     {
         private List<TracerData> _tracerData = new List<TracerData>();
+        private string fname;
+        private string lname;
+        private string simlevel;
         public MainWindow()
         {
             InitializeComponent();
-            resultsGrid.Visibility = Visibility.Hidden;
             DataLoading ds = new DataLoading();
             _tracerData = ds.LoadData();
+            resultsGrid.Visibility = Visibility.Hidden;
+            progressGrid.Visibility = Visibility.Hidden;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            string fname = fNameTxt.Text;
-            string lname = lNameTxt.Text;
-            string simlevel = simLevel.Text;
 
+            fname = fNameTxt.Text;
+            lname = lNameTxt.Text;
+            simlevel = simLevel.Text;
+            Task.Run(() => StartTracing());
+            progressGrid.Visibility = Visibility.Visible;
+            resultsGrid.Visibility = Visibility.Hidden;
+        }
+
+        private void StartTracing()
+        {
             if (simlevel == "Serial")
             {
                 SerialProcessing sp = new SerialProcessing();
@@ -48,23 +62,31 @@ namespace SerialSimulation
 
         private void DisplayData(SerialProcessing sp)
         {
-            peopleCountSecLevel.Content = sp.secondLevelCount.ToString();
-            peopleCount.Content = sp.peopleCount.ToString();
-            placesCount.Content = sp.placesCount.ToString();
-            daysCount.Content = sp.daysCount.ToString();
-            communitiesCount.Content = sp.comCount.ToString();
-            resultsGrid.Visibility = Visibility.Visible;
+            Application.Current.Dispatcher.Invoke((Action)(() =>
+            {
+                peopleCountSecLevel.Content = sp.secondLevelCount.ToString();
+                peopleCount.Content = sp.peopleCount.ToString();
+                placesCount.Content = sp.placesCount.ToString();
+                daysCount.Content = sp.daysCount.ToString();
+                communitiesCount.Content = sp.comCount.ToString();
+                resultsGrid.Visibility = Visibility.Visible;
+                progressGrid.Visibility = Visibility.Hidden;
+            }));
         }
 
 
         private void DisplayData(ParallelProcessing pp)
         {
-            peopleCountSecLevel.Content = pp.secondLevelCount.ToString();
-            peopleCount.Content = pp.peopleCount.ToString();
-            placesCount.Content = pp.placesCount.ToString();
-            daysCount.Content = pp.daysCount.ToString();
-            communitiesCount.Content = pp.comCount.ToString();
-            resultsGrid.Visibility = Visibility.Visible;
+            Application.Current.Dispatcher.Invoke((Action)(() =>
+            {
+                peopleCountSecLevel.Content = pp.secondLevelCount.ToString();
+                peopleCount.Content = pp.peopleCount.ToString();
+                placesCount.Content = pp.placesCount.ToString();
+                daysCount.Content = pp.daysCount.ToString();
+                communitiesCount.Content = pp.comCount.ToString();
+                resultsGrid.Visibility = Visibility.Visible;
+                progressGrid.Visibility = Visibility.Hidden;
+            }));
         }
     }
 

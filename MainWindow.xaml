@@ -6,8 +6,9 @@
         xmlns:local="clr-namespace:SerialSimulation"
         mc:Ignorable="d"
         FontFamily="{StaticResource ProductSanRegular}" 
-        Title="COVID19 Contact Tracer" Height="661.166" Width="750" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" SizeToContent="WidthAndHeight" Background="#FF2A2828" Icon="Resources/icon.png">
-    <Grid Margin="0,0,29.667,-2.667" Background="#FF2A2828">
+        Title="COVID19 Contact Tracer" Height="661.166" Width="750" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" SizeToContent="WidthAndHeight" Background="#FF133340" Icon="Resources/icon.png"
+        xmlns:gif="https://github.com/XamlAnimatedGif/XamlAnimatedGif">
+    <Grid Margin="0,0,29.667,-2.667" Background="#FF133340">
         <Label FontFamily="{StaticResource ProductSansBold}"  Content="CONTACT TRACING SIMULATION" HorizontalAlignment="Left" Margin="103,68,0,0" VerticalAlignment="Top" FontSize="35" FontWeight="Bold" Foreground="#FFFF3527"/>
         <Label Content="First Name :" HorizontalAlignment="Left" Height="31" Margin="14,123,0,0" VerticalAlignment="Top" Width="135" FontSize="18" VerticalContentAlignment="Center" Foreground="White"/>
         <Label Content="Last Name :" HorizontalAlignment="Left" Height="31" Margin="363,123,0,0" VerticalAlignment="Top" Width="133" FontSize="18" VerticalContentAlignment="Center" Foreground="White"/>
@@ -38,6 +39,10 @@
             <Label x:Name="totalPeopleCount_Copy" Content="/131000" HorizontalAlignment="Left" Height="61" Margin="382,145,0,0" VerticalAlignment="Top" Width="295" FontSize="40" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontWeight="Bold" Foreground="White"/>
         </Grid>
         <Image HorizontalAlignment="Left" Height="66" Margin="206,10,0,0" VerticalAlignment="Top" Width="348" Source="Resources/covid19header.png"/>
+        <Grid x:Name="progressGrid" HorizontalAlignment="Left" Height="430" VerticalAlignment="Top" Width="691" Background="#FF133340" Margin="24,196,0,0">
+            <Image gif:AnimationBehavior.SourceUri="Resources/loader.gif" HorizontalAlignment="Left" Height="366" Margin="148,10,0,0" VerticalAlignment="Top" Width="409"/>
+            <Label Content="Retrieving data..." HorizontalAlignment="Left" Margin="240,310,0,0" VerticalAlignment="Top" Foreground="#FFFE6D2B" FontSize="30"/>
+        </Grid>
 
     </Grid>
 </Window>

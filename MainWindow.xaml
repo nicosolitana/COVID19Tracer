@@ -17,6 +17,7 @@
         <ComboBox x:Name="simLevel" HorizontalAlignment="Left" Height="32" Margin="154,159,0,0" VerticalAlignment="Top" Width="342" FontSize="18" VerticalContentAlignment="Center">
             <ComboBoxItem Content="Serial" IsSelected="True" HorizontalAlignment="Left" Width="297.333333333333"/>
             <ComboBoxItem Content="Parallel" HorizontalAlignment="Left" Width="297.333333333333"/>
+            <ComboBoxItem Content="Distributed" HorizontalAlignment="Left" Width="297.333333333333"/>
         </ComboBox>
         <Label Content="Execution :" HorizontalAlignment="Left" Height="32" Margin="14,159,0,0" VerticalAlignment="Top" Width="135" FontSize="18" VerticalContentAlignment="Center" Foreground="White"/>
         <Button Content="START" HorizontalAlignment="Left" Height="32" Margin="501,159,0,0" VerticalAlignment="Top" Width="204" FontSize="18" Click="Button_Click"/>
